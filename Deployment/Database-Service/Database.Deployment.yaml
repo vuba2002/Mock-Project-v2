@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-service
+  namespace: mock-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: database-service
+  template:
+    metadata:
+      labels:
+        app: database-service
+    spec:
+      containers:
+      - name: database-service
+        image: nguyenbavu1902/database-service:v0.0.1
+        ports:
+        - containerPort: 8081
+        envFrom:
+        - configMapRef:
+            name: mongodb-config

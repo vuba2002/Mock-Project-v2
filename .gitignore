@@ -1,0 +1,14 @@
+#################################
+########Infrastructure###########
+#################################
+
+/Infrastructure/*/.terraform/
+
+/Infrastructure/*/.terraform.lock.hcl
+/Infrastructure/*/.terraform.lock.hcl.backup
+
+/Infrastructure/*/terraform.*
+
+/Infrastructure/*/terraform.tfvars
+
+/Infrastructure/*/Modules/*/*.pem

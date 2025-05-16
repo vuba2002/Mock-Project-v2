@@ -1,0 +1,89 @@
+version: "3"
+
+tasks:
+  01-create name space:
+    desc: Create name space name "mock-project"
+    cmds:
+      - kubectl create namespace mock-project
+  02-Mongodb database setup:
+    desc: Mongo Database Setup
+    cmds:
+      - cd Deployment_on_EKS
+      - kubens mock-project
+      - kubectl create -f .\Mongodb\
+  03-Setup master-slave database:
+    desc: Setup 1 master and 2 master-slave
+    cmds:
+      - kubectl exec -it mongo-0 -- mongo
+      - rs.initiate();
+      - sleep(2000);
+      - rs.add("mongo-1.mongo:27017");
+      - sleep(2000);
+      - rs.add("mongo-2.mongo:27017");
+      - sleep(2000);
+      - cfg = rs.conf();
+      - cfg.members[0].host = "mongo-0.mongo:27017";
+      - rs.reconfig(cfg,force=true);
+      - sleep(5000);
+  04-Add user in mongodb:
+    desc: Create user
+    cmds:
+      - |
+        use admin;
+        db.createUser({
+          user: "admin",
+          pwd: "password",
+          roles: [{ role: "root", db: "admin" }]
+        });
+  05-Add-database:
+    desc: Add data to mongodb
+    cmds:
+      - use mydb;
+      - |
+        db.deployments.insertMany([
+        { "application": "user-service", "environment": "development", "status": "Success", "duration": 32 },
+        { "application": "inventory-service", "environment": "production", "status": "Failed", "duration": 50 },
+        { "application": "cart-service", "environment": "staging", "status": "Success", "duration": 29 },
+        { "application": "order-service", "environment": "production", "status": "Success", "duration": 60 },
+        { "application": "payment-service", "environment": "production", "status": "Success", "duration": 45 },
+        { "application": "auth-service", "environment": "staging", "status": "Failed", "duration": 28 },
+        { "application": "reporting-service", "environment": "development", "status": "Success", "duration": 36 },
+        { "application": "billing-service", "environment": "staging", "status": "Failed", "duration": 40 },
+        { "application": "email-service", "environment": "production", "status": "Success", "duration": 48 },
+        { "application": "sms-service", "environment": "staging", "status": "Failed", "duration": 33 }
+        ]);
+      - db.deployments.find().pretty()
+  06-Database-Service setup:
+    desc: Create database service on EKS 
+    cmds:
+      - kubectl create -f .\Database-Service\
+      - kubectl port-forward deployment/database-service 8081:8081
+  07-Backend-Service setup:
+    desc: Create backend service on EKS
+    cmds:
+      - kubectl create -f .\Backend-Service\
+      - kubectl port-forward deployment/backend-service 8082:8082
+  08-API-Gateway setup:
+    desc: Create api gateway on EKS
+    cmds:
+      - kubectl create -f .\API-Gateway\
+      - kubectl port-forward deployment/api-gateway 8080:8080
+  09-Deploy Traefik using Helm:
+    desc: Deploy Traefik using Helm
+    cmds:
+      - helm repo add traefik https://traefik.github.io/charts
+      - helm repo update
+      - helm install traefik traefik/traefik --namespace kube-system --create-namespace --set service.type=LoadBalancer
+  10-UI-Service setup:
+    desc: You must replace DNS Load Balancer to Ingress.yaml and UI.Configmap.yaml
+    cmds:
+      - kubectl create -f .\UI-Service\
+  11-Setup-Rancher:
+  
+
+
+
+
+      
+
+

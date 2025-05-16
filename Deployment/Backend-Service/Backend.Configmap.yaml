@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: mock-project
+data:
+  DATABASE_SERVICE_URL: "http://database-service.mock-project.svc.cluster.local:8081"

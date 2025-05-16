@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-service
+  namespace: mock-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ui-service
+  template:
+    metadata:
+      labels:
+        app: ui-service
+    spec:
+      containers:
+        - name: ui-service
+          image: nguyenbavu1902/ui-service:v0.0.3
+          env:
+            - name: REACT_APP_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ui-config
+                  key: REACT_APP_API_URL
+          ports:
+            - containerPort: 80
+

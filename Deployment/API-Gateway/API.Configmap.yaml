@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: mock-project
+data:
+  BACKEND_SERVICE_URL: "http://backend-service.mock-project.svc.cluster.local:8082"
+  DATABASE_SERVICE_URL: "http://database-service.mock-project.svc.cluster.local:8081"
+  CORS_ALLOWED_ORIGIN_PATTERNS: "*" # Tạm thời cho phép tất cả
