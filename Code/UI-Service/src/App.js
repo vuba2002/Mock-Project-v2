@@ -1,50 +1,34 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-// Lấy từ biến môi trường build-time hoặc fallback về "/api"
-const API_URL = process.env.REACT_APP_API_URL || "http://nguyenbavu.example.com:31080/api";
 
+const API_URL = process.env.REACT_APP_API_URL || window.location.origin;
 function App() {
   const [metrics, setMetrics] = useState('');
   const [deployments, setDeployments] = useState([]);
 
   useEffect(() => {
-    console.log('🔗 API_URL:', API_URL);
-
-    // Fetch metrics (text/plain)
-    fetch(`${API_URL}/metrics`)
-      .then(res => {
-        if (!res.ok) throw new Error(`Metrics fetch failed: ${res.status}`);
-        return res.text();
-      })
+    fetch(`${API_URL}/api/metrics`)  
+      .then(res => res.text())
       .then(setMetrics)
-      .catch(err => {
-        console.error(err);
-        setMetrics('❌ Failed to load metrics');
-      });
+      .catch(console.error);
+      console.log(process.env.REACT_APP_API_URL)
 
-    // Fetch deployments (application/json)
-    fetch(`${API_URL}/deployments`)
-      .then(res => {
-        if (!res.ok) throw new Error(`Deployments fetch failed: ${res.status}`);
-        return res.json();
-      })
+    fetch(`${API_URL}/api/deployments`) 
+      .then(res => res.json())
       .then(setDeployments)
-      .catch(err => {
-        console.error(err);
-        setDeployments([]);
-      });
+      .catch(console.error);
   }, []);
 
   return (
     <div className="dashboard">
       <header className="header">
-        <h1>🚀 Deployment Dashboard</h1>
+        <h1>🚀 DevOps Deployment Dashboard</h1>
       </header>
 
       <section className="metrics-card">
         <h2>📊 System Metrics</h2>
-        <p>{metrics || 'Loading metrics...'}</p>
+        <p>{metrics || "Loading metrics..."}</p>
       </section>
 
       <section className="deployments-container">

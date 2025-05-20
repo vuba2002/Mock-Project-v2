@@ -4,11 +4,9 @@ metadata:
   name: api-gateway
   namespace: mock-project
 spec:
+  type: ClusterIP
   selector:
     app: api-gateway
-
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-  type: ClusterIP
+    - port: 8080         # cổng service trong cluster
+      targetPort: 8080   # cổng container trong Pod

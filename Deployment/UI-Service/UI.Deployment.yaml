@@ -13,9 +13,11 @@ spec:
       labels:
         app: ui-service
     spec:
+      imagePullSecrets:
+        - name: ecr-registry-secret
       containers:
         - name: ui-service
-          image: nguyenbavu1902/ui-service:v0.0.3
+          image: nguyenbavu1902/ui-service:v0.1.4
           env:
             - name: REACT_APP_API_URL
               valueFrom:
@@ -24,4 +26,3 @@ spec:
                   key: REACT_APP_API_URL
           ports:
             - containerPort: 80
-

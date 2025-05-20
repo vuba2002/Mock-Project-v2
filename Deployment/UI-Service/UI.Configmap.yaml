@@ -4,4 +4,4 @@ metadata:
   name: ui-config
   namespace: mock-project
 data:
-  REACT_APP_API_URL: "a42feefce5558426080c8d4bbbd22a68-581886753.ap-southeast-1.elb.amazonaws.com" # DNS of Load Balancer/api
+  REACT_APP_API_URL: "http://api-gateway.mock-project.svc.cluster.local:8080/api"
